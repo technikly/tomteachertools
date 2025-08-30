@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Tools</title>
+
+    <!-- Favicon (easy to edit). Place favicon.svg next to this file -->
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+    <!-- Tailwind Play CDN (no build step needed) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Tailwind on-the-fly config (system fonts for speed)
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: [
+                'ui-sans-serif','system-ui','-apple-system','Segoe UI','Roboto','Inter',
+                'Noto Sans','Helvetica Neue','Arial','Apple Color Emoji','Segoe UI Emoji'
+              ],
+            },
+          }
+        }
+      }
+    </script>
+
+    <style>
+      :root {
+        /* These are overridden by site.yaml values */
+        --accent: #7c3aed;          /* default violet */
+        --accent-2: #22d3ee;        /* default cyan */
+        --ring: rgba(124, 58, 237, .35);
+        --bg: #0b0f19;              /* default dark bg for gradient */
+        --card: rgba(255,255,255,.06);
+        --card-border: rgba(255,255,255,.12);
+        --shadow: 0 10px 30px rgba(0,0,0,.25);
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #f8fafc;
+          --card: rgba(255,255,255,.85);
+          --card-border: rgba(15,23,42,.08);
+          --shadow: 0 10px 25px rgba(2,6,23,.07);
+        }
+      }
+
+      .bg-orb {
+        background:
+          radial-gradient(1200px 600px at 10% -20%, color-mix(in oklab, var(--accent), transparent 65%), transparent 60%),
+          radial-gradient(1000px 700px at 110% -10%, color-mix(in oklab, var(--accent-2), transparent 70%), transparent 65%),
+          linear-gradient(180deg, color-mix(in oklab, var(--bg), #000 5%), var(--bg));
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--card-border);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      }
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 40px color-mix(in oklab, var(--accent), transparent 70%);
+        border-color: color-mix(in oklab, var(--accent), var(--card-border) 50%);
+      }
+
+      .ring-accent:focus {
+        outline: none;
+        box-shadow: 0 0 0 6px var(--ring);
+      }
+
+      .grad-text {
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-orb text-slate-100 selection:bg-violet-500/40 selection:text-white">
+    <main class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+      <!-- Header -->
+      <header class="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 id="site-title" class="text-4xl sm:text-5xl font-bold tracking-tight grad-text">My Tools</h1>
+          <p id="site-description" class="mt-2 text-slate-300 max-w-2xl">
+            A beautiful, adaptive launcher for my apps.
+          </p>
+        </div>
+
+        <!-- Search -->
+        <div class="w-full sm:w-auto">
+          <label class="sr-only" for="search">Search tools</label>
+          <div class="relative">
+            <input
+              id="search"
+              type="search"
+              placeholder="Search tools…"
+              class="w-full sm:w-80 rounded-2xl bg-white/90 text-slate-800 placeholder:text-slate-500 px-5 py-3 card ring-accent"
+            />
+            <div class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">⌘K</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Tags row (auto-filled if you add tags in YAML) -->
+      <div id="tags" class="mb-6 flex flex-wrap gap-2"></div>
+
+      <!-- Grid -->
+      <section id="grid" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></section>
+
+      <!-- Footer / Last updated -->
+      <footer class="mt-12 text-sm text-slate-400">
+        <div id="last-updated"></div>
+        <div class="mt-2">
+          <a href="site.yaml" class="underline hover:no-underline">Edit site.yaml</a> to add or reorder links. No code changes needed.
+        </div>
+      </footer>
+    </main>
+
+    <!-- js-yaml (parse YAML client-side) -->
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+
+    <script>
+      // ---------- Configuration ----------
+      const YAML_URL = 'site.yaml'; // Your single source of truth
+      // Fallback data if site.yaml can't be loaded (so the page still works)
+      const FALLBACK_YAML = `
+site:
+  title: "My Tools"
+  description: "A beautiful, adaptive launcher for my apps."
+  theme:
+    accent: "#7c3aed"      # violet
+    accent2: "#22d3ee"     # cyan
+links:
+  - title: "Sentence Builder Tool"
+    url: "https://sentencebuilderapp.netlify.app/"
+    description: "Build sentences quickly with helpful scaffolds."
+    icon: "🧩"
+    tags: ["literacy","builder"]
+  - title: "Rubric Grid Assessment"
+    url: "https://rubricgrid.netlify.app/"
+    description: "Create & share assessment rubrics."
+    icon: "✅"
+    tags: ["assessment"]
+  - title: "School Time Table Maker"
+    url: "https://schoolttmaker.netlify.app/"
+    description: "Generate timetables the easy way."
+    icon: "📅"
+    tags: ["scheduling","school"]
+      `.trim();
+
+      // ---------- Helpers ----------
+      const $ = sel => document.querySelector(sel);
+
+      function applyTheme(theme = {}) {
+        if (theme.accent) document.documentElement.style.setProperty('--accent', theme.accent);
+        if (theme.accent2) document.documentElement.style.setProperty('--accent-2', theme.accent2);
+        // ring color follows accent automatically (CSS uses --accent)
+      }
+
+      function createTagPill(tag, active = false) {
+        const btn = document.createElement('button');
+        btn.className = `card rounded-full px-3 py-1 text-sm ${active ? 'outline outline-2 outline-[var(--accent)]' : ''}`;
+        btn.textContent = `#${tag}`;
+        btn.dataset.tag = tag;
+        btn.addEventListener('click', () => {
+          // toggle active and filter
+          document.querySelectorAll('#tags button').forEach(b => b.classList.remove('outline', 'outline-2', 'outline-[var(--accent)]'));
+          if (!active) {
+            btn.classList.add('outline', 'outline-2', 'outline-[var(--accent)]');
+            filterCards($('#search').value, tag);
+          } else {
+            filterCards($('#search').value, null);
+          }
+        });
+        return btn;
+      }
+
+      function renderTags(allLinks) {
+        const tagSet = new Set();
+        allLinks.forEach(l => (l.tags || []).forEach(t => tagSet.add(t)));
+        const tags = Array.from(tagSet).sort();
+        const row = $('#tags');
+        row.innerHTML = '';
+        if (tags.length === 0) return;
+        const label = document.createElement('span');
+        label.className = 'text-slate-300 mr-1 self-center';
+        label.textContent = 'Filter:';
+        row.appendChild(label);
+        tags.forEach(t => row.appendChild(createTagPill(t, false)));
+      }
+
+      function makeCard(link) {
+        const a = document.createElement('a');
+        a.href = link.url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.className = 'card group block rounded-2xl p-5 focus:shadow-xl focus:ring-4 focus:ring-[var(--ring)] focus:outline-none';
+
+        const top = document.createElement('div');
+        top.className = 'flex items-start gap-3';
+
+        const iconWrap = document.createElement('div');
+        iconWrap.className = 'grid h-12 w-12 place-items-center rounded-xl bg-white/90 text-2xl shrink-0';
+        iconWrap.textContent = link.icon || '🔗';
+
+        const titleWrap = document.createElement('div');
+        const h3 = document.createElement('h3');
+        h3.className = 'text-lg font-semibold text-slate-900/95 dark:text-white';
+        h3.textContent = link.title;
+
+        const desc = document.createElement('p');
+        desc.className = 'mt-1 text-sm text-slate-600 dark:text-slate-300';
+        desc.textContent = link.description || '';
+
+        titleWrap.appendChild(h3);
+        titleWrap.appendChild(desc);
+
+        top.appendChild(iconWrap);
+        top.appendChild(titleWrap);
+
+        const chips = document.createElement('div');
+        chips.className = 'mt-3 flex flex-wrap gap-2';
+        (link.tags || []).forEach(tag => {
+          const chip = document.createElement('span');
+          chip.className = 'rounded-full bg-white/60 dark:bg-white/10 text-slate-700 dark:text-slate-200 px-2 py-0.5 text-xs border border-slate-200/60 dark:border-white/10';
+          chip.textContent = `#${tag}`;
+          chips.appendChild(chip);
+        });
+
+        const arrow = document.createElement('div');
+        arrow.className = 'mt-4 inline-flex items-center text-sm font-medium text-slate-800/80 dark:text-white/80';
+        arrow.innerHTML = `
+          <span class="grad-text">Open</span>
+          <svg class="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+               viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd"
+                  d="M3 10a1 1 0 011-1h9.586L11.293 6.707a1 1 0 111.414-1.414l4.5 4.5a1 1 0 010 1.414l-4.5 4.5a1 1 0 11-1.414-1.414L13.586 11H4a1 1 0 01-1-1z"
+                  clip-rule="evenodd"/>
+          </svg>
+        `;
+
+        a.appendChild(top);
+        if ((link.tags || []).length) a.appendChild(chips);
+        a.appendChild(arrow);
+
+        // data attrs for filtering
+        a.dataset.search = [link.title, link.description, ...(link.tags || [])].join(' ').toLowerCase();
+        a.dataset.tags = (link.tags || []).join(',');
+
+        return a;
+      }
+
+      function renderGrid(links) {
+        const grid = $('#grid');
+        grid.innerHTML = '';
+        links.forEach(link => grid.appendChild(makeCard(link)));
+      }
+
+      function filterCards(query = '', tag = null) {
+        const q = query.trim().toLowerCase();
+        document.querySelectorAll('#grid a').forEach(card => {
+          const matchesText = !q || card.dataset.search.includes(q);
+          const matchesTag = !tag || (card.dataset.tags.split(',').filter(Boolean).includes(tag));
+          card.style.display = (matchesText && matchesTag) ? '' : 'none';
+        });
+      }
+
+      function applyMeta(site) {
+        if (site?.title) {
+          document.title = site.title;
+          $('#site-title').textContent = site.title;
+        }
+        if (site?.description) $('#site-description').textContent = site.description;
+        applyTheme(site?.theme);
+      }
+
+      function showUpdated(timestamp) {
+        const el = $('#last-updated');
+        const dt = new Date(timestamp);
+        if (!isNaN(dt)) {
+          el.textContent = `Last updated: ${dt.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}`;
+        }
+      }
+
+      // Keyboard shortcut for search (Cmd/Ctrl + K)
+      window.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          $('#search').focus();
+        }
+      });
+
+      // ---------- Boot ----------
+      (async function init() {
+        let text, data;
+        try {
+          const res = await fetch(YAML_URL, { cache: 'no-store' });
+          text = await res.text();
+        } catch (e) {
+          text = FALLBACK_YAML;
+        }
+        try {
+          data = jsyaml.load(text);
+        } catch (e) {
+          console.error('YAML parse error:', e);
+          data = jsyaml.load(FALLBACK_YAML);
+        }
+
+        applyMeta(data.site);
+        renderGrid(data.links || []);
+        renderTags(data.links || []);
+        $('#search').addEventListener('input', (e) => filterCards(e.target.value));
+
+        // If the YAML came from the network, use its Last-Modified if available
+        try {
+          const head = await fetch(YAML_URL, { method: 'HEAD', cache: 'no-store' });
+          const lm = head.headers.get('Last-Modified');
+          showUpdated(lm || Date.now());
+        } catch {
+          showUpdated(Date.now());
+        }
+      })();
+    </script>
+  </body>
+</html>
