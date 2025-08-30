@@ -1,0 +1,22 @@
+site:
+  title: "Tom's Teacher Tools"
+  description: "A beautiful, adaptive launcher for my teaching apps."
+  theme:
+    accent: "#7c3aed" # violet
+    accent2: "#22d3ee" # cyan
+links:
+  - title: "Sentence Builder Tool"
+    url: "https://sentencebuilderapp.netlify.app/"
+    description: "Build sentences quickly with helpful scaffolds."
+    icon: "🧩"
+    tags: ["literacy", "builder"]
+  - title: "Rubric Grid Assessment"
+    url: "https://rubricgrid.netlify.app/"
+    description: "Create & share assessment rubrics."
+    icon: "✅"
+    tags: ["assessment"]
+  - title: "School Time Table Maker"
+    url: "https://schoolttmaker.netlify.app/"
+    description: "Generate timetables the easy way."
+    icon: "📅"
+    tags: ["scheduling", "school"]
