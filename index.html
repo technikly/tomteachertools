@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tom's Teacher Tools</title>
 
+    <script>
+      (function () {
+        const stored = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const dark = stored ? stored === "dark" : prefersDark;
+        const root = document.documentElement;
+        root.classList.toggle("dark", dark);
+        root.setAttribute("data-theme", dark ? "dark" : "light");
+      })();
+    </script>
+
     <!-- Favicon (easy to edit). Place favicon.svg next to this file -->
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
 
@@ -47,13 +58,11 @@
         --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
       }
 
-      @media (prefers-color-scheme: light) {
-        :root {
-          --bg: #f8fafc;
-          --card: rgba(255, 255, 255, 0.85);
-          --card-border: rgba(15, 23, 42, 0.08);
-          --shadow: 0 10px 25px rgba(2, 6, 23, 0.07);
-        }
+      :root[data-theme="light"] {
+        --bg: #f8fafc;
+        --card: rgba(255, 255, 255, 0.85);
+        --card-border: rgba(15, 23, 42, 0.08);
+        --shadow: 0 10px 25px rgba(2, 6, 23, 0.07);
       }
 
       .bg-orb {
@@ -87,7 +96,7 @@
           border-color 0.2s ease;
       }
       .card:hover {
-        transform: translateY(-2px);
+        transform: translateY(-2px) scale(1.02);
         box-shadow: 0 14px 40px
           color-mix(in oklab, var(--accent), transparent 70%);
         border-color: color-mix(
@@ -111,23 +120,32 @@
     </style>
   </head>
   <body
-    class="min-h-screen bg-orb text-slate-100 selection:bg-violet-500/40 selection:text-white"
+    class="min-h-screen bg-orb text-slate-100 transition-colors duration-300 selection:bg-violet-500/40 selection:text-white"
   >
     <main class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
       <!-- Header -->
       <header
         class="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"
       >
-        <div>
-          <h1
-            id="site-title"
-            class="text-4xl sm:text-5xl font-bold tracking-tight grad-text"
+        <div class="flex items-start justify-between">
+          <div>
+            <h1
+              id="site-title"
+              class="text-4xl sm:text-5xl font-bold tracking-tight grad-text"
+            >
+              Tom's Teacher Tools
+            </h1>
+            <p id="site-description" class="mt-2 text-slate-300 max-w-2xl">
+              A beautiful, adaptive launcher for my apps.
+            </p>
+          </div>
+          <button
+            id="theme-toggle"
+            class="ml-4 flex h-10 w-10 items-center justify-center rounded-full card ring-accent"
+            aria-label="Toggle theme"
           >
-            Tom's Teacher Tools
-          </h1>
-          <p id="site-description" class="mt-2 text-slate-300 max-w-2xl">
-            A beautiful, adaptive launcher for my apps.
-          </p>
+            <span id="theme-toggle-icon">🌙</span>
+          </button>
         </div>
 
         <!-- Search -->
@@ -138,7 +156,7 @@
               id="search"
               type="search"
               placeholder="Search tools…"
-              class="w-full sm:w-80 rounded-2xl bg-white/90 text-slate-800 placeholder:text-slate-500 px-5 py-3 card ring-accent"
+              class="w-full sm:w-80 rounded-2xl bg-white/90 dark:bg-white/10 text-slate-800 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 px-5 py-3 card ring-accent"
             />
             <div
               class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -362,6 +380,25 @@ links:
         }
       }
 
+      function initThemeToggle() {
+        const btn = $("#theme-toggle");
+        const icon = $("#theme-toggle-icon");
+        if (!btn || !icon) return;
+        const updateIcon = () => {
+          icon.textContent = document.documentElement.classList.contains("dark")
+            ? "🌞"
+            : "🌙";
+        };
+        btn.addEventListener("click", () => {
+          const dark = !document.documentElement.classList.contains("dark");
+          document.documentElement.classList.toggle("dark", dark);
+          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+          localStorage.setItem("theme", dark ? "dark" : "light");
+          updateIcon();
+        });
+        updateIcon();
+      }
+
       // Keyboard shortcut for search (Cmd/Ctrl + K)
       window.addEventListener("keydown", (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
@@ -389,6 +426,7 @@ links:
         applyMeta(data.site);
         renderGrid(data.links || []);
         renderTags(data.links || []);
+        initThemeToggle();
         $("#search").addEventListener("input", (e) =>
           filterCards(e.target.value),
         );
