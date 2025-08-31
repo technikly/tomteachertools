@@ -3,7 +3,7 @@ site:
   description: "A beautiful, adaptive launcher for my teaching apps."
   theme:
     accent: "#22c55e" # green
-    accent2: "#9333ea" # purple
+    accent2: "#3b82f6" # blue
 links:
   - title: "Sentence Builder Tool"
     url: "https://sentencebuilderapp.netlify.app/"
