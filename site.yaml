@@ -2,8 +2,8 @@ site:
   title: "Tom's Teacher Tools"
   description: "A beautiful, adaptive launcher for my teaching apps."
   theme:
-    accent: "#7c3aed" # violet
-    accent2: "#22d3ee" # cyan
+    accent: "#22c55e" # green
+    accent2: "#9333ea" # purple
 links:
   - title: "Sentence Builder Tool"
     url: "https://sentencebuilderapp.netlify.app/"
