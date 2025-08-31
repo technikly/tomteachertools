@@ -54,17 +54,57 @@
         --accent: #22c55e; /* default green */
         --accent-2: #3b82f6; /* default blue */
         --ring: rgba(59, 130, 246, 0.35);
-        --bg: #0b0f19; /* default dark bg for gradient */
-        --card: rgba(255, 255, 255, 0.06);
-        --card-border: rgba(255, 255, 255, 0.12);
-        --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+        /* Light theme */
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --surface-2: #f8fafc;
+        --text: #0f172a;
+        --muted: #475569;
+        --border: rgba(2, 6, 23, 0.12);
+        --link: #2563eb;
+        --link-hover: #1d4ed8;
+        --chip-bg: rgba(2, 6, 23, 0.06);
+        --chip-text: #0f172a;
+        --shadow: 0 8px 24px rgba(2, 6, 23, 0.08);
       }
 
-      :root[data-theme="light"] {
-        --bg: #f8fafc;
-        --card: rgba(255, 255, 255, 0.85);
-        --card-border: rgba(15, 23, 42, 0.08);
-        --shadow: 0 10px 25px rgba(2, 6, 23, 0.07);
+      :root.dark,
+      [data-theme="dark"] {
+        color-scheme: dark;
+        --bg: #0b1220;
+        --surface: #111827;
+        --surface-2: #0f172a;
+        --text: #e5e7eb;
+        --muted: #a3a3a3;
+        --border: rgba(255, 255, 255, 0.12);
+        --link: #93c5fd;
+        --link-hover: #bfdbfe;
+        --chip-bg: rgba(148, 163, 184, 0.18);
+        --chip-text: #e5e7eb;
+        --shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+      }
+
+      html {
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      body {
+        color: var(--text);
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        color: var(--text);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease,
+          border-color 0.2s ease;
       }
 
       .bg-orb {
@@ -97,17 +137,6 @@
         }
       }
 
-      .card {
-        background: var(--card);
-        border: 1px solid var(--card-border);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        transition:
-          transform 0.2s ease,
-          box-shadow 0.2s ease,
-          border-color 0.2s ease;
-      }
       .card:hover {
         transform: translateY(-2px) scale(1.02);
         box-shadow: 0 14px 40px
@@ -115,7 +144,7 @@
         border-color: color-mix(
           in oklab,
           var(--accent),
-          var(--card-border) 50%
+          var(--border) 50%
         );
       }
 
@@ -144,10 +173,54 @@
           background-position: 0% 50%;
         }
       }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .link {
+        color: var(--link);
+        text-underline-offset: 2px;
+      }
+      .link:hover {
+        color: var(--link-hover);
+      }
+
+      .input,
+      input[type="text"],
+      input[type="search"],
+      .search {
+        background: var(--surface-2);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .input::placeholder {
+        color: var(--muted);
+      }
+
+      .chip,
+      .tag,
+      .filter-pill {
+        background: var(--chip-bg);
+        color: var(--chip-text);
+        border: 1px solid var(--border);
+        border-radius: 9999px;
+      }
+
+      .icon-wrapper {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+      }
+
+      .icon,
+      svg {
+        color: currentColor;
+        opacity: 0.95;
+      }
     </style>
   </head>
   <body
-    class="min-h-screen bg-orb text-slate-900 dark:text-slate-100 transition-colors duration-300 selection:bg-green-500/40 selection:text-white"
+    class="min-h-screen bg-orb transition-colors duration-300 selection:bg-green-500/40 selection:text-white"
   >
     <main class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
       <!-- Header -->
@@ -164,7 +237,7 @@
             </h1>
             <p
               id="site-description"
-              class="mt-2 text-slate-600 dark:text-slate-200 max-w-2xl"
+              class="mt-2 muted max-w-2xl"
             >
               A beautiful, adaptive launcher for my apps.
             </p>
@@ -186,10 +259,10 @@
               id="search"
               type="search"
               placeholder="Search tools…"
-              class="w-full sm:w-80 rounded-2xl bg-white/90 dark:bg-white/10 text-slate-800 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-300 px-5 py-3 card ring-accent"
+              class="w-full sm:w-80 rounded-2xl px-5 py-3 card ring-accent input"
             />
             <div
-              class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-200"
+              class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 muted"
             >
               ⌘K
             </div>
@@ -207,10 +280,10 @@
       ></section>
 
       <!-- Footer / Last updated -->
-      <footer class="mt-12 text-sm text-slate-500 dark:text-slate-300">
+      <footer class="mt-12 text-sm muted">
         <div id="last-updated"></div>
         <div class="mt-2">
-          <a href="site.yaml" class="underline hover:no-underline"
+          <a href="site.yaml" class="link underline hover:no-underline"
             >Edit site.yaml</a
           >
           to add or reorder links. No code changes needed.
@@ -266,7 +339,7 @@ links:
 
       function createTagPill(tag, active = false) {
         const btn = document.createElement("button");
-        btn.className = `card rounded-full px-3 py-1 text-sm ${active ? "outline outline-2 outline-[var(--accent)]" : ""}`;
+        btn.className = `chip px-3 py-1 text-sm ${active ? "outline outline-2 outline-[var(--accent)]" : ""}`;
         btn.textContent = `#${tag}`;
         btn.dataset.tag = tag;
         btn.addEventListener("click", () => {
@@ -302,7 +375,7 @@ links:
         row.innerHTML = "";
         if (tags.length === 0) return;
         const label = document.createElement("span");
-        label.className = "text-slate-600 dark:text-slate-200 mr-1 self-center";
+        label.className = "muted mr-1 self-center";
         label.textContent = "Filter:";
         row.appendChild(label);
         tags.forEach((t) => row.appendChild(createTagPill(t, false)));
@@ -321,17 +394,16 @@ links:
 
         const iconWrap = document.createElement("div");
         iconWrap.className =
-          "grid h-12 w-12 place-items-center rounded-xl bg-white/90 text-2xl shrink-0";
+          "grid h-12 w-12 place-items-center rounded-xl text-2xl shrink-0 icon-wrapper";
         iconWrap.textContent = link.icon || "🔗";
 
         const titleWrap = document.createElement("div");
         const h3 = document.createElement("h3");
-        h3.className =
-          "text-lg font-semibold text-slate-900/95 dark:text-white";
+        h3.className = "text-lg font-semibold";
         h3.textContent = link.title;
 
         const desc = document.createElement("p");
-        desc.className = "mt-1 text-sm text-slate-600 dark:text-slate-200";
+        desc.className = "mt-1 text-sm muted";
         desc.textContent = link.description || "";
 
         titleWrap.appendChild(h3);
@@ -344,17 +416,16 @@ links:
         chips.className = "mt-3 flex flex-wrap gap-2";
         (link.tags || []).forEach((tag) => {
           const chip = document.createElement("span");
-          chip.className =
-            "rounded-full bg-white/60 dark:bg-white/10 text-slate-700 dark:text-white px-2 py-0.5 text-xs border border-slate-200/60 dark:border-white/10";
+          chip.className = "chip px-2 py-0.5 text-xs";
           chip.textContent = `#${tag}`;
           chips.appendChild(chip);
         });
 
         const arrow = document.createElement("div");
         arrow.className =
-          "mt-4 inline-flex items-center text-sm font-medium text-slate-800/80 dark:text-slate-100";
+          "mt-4 inline-flex items-center text-sm font-medium link";
         arrow.innerHTML = `
-          <span class="grad-text">Open</span>
+          <span>Open</span>
           <svg class="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
                viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd"
