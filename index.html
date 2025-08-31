@@ -52,8 +52,8 @@
       :root {
         /* These are overridden by site.yaml values */
         --accent: #22c55e; /* default green */
-        --accent-2: #9333ea; /* default purple */
-        --ring: rgba(34, 197, 94, 0.35);
+        --accent-2: #3b82f6; /* default blue */
+        --ring: rgba(59, 130, 246, 0.35);
         --bg: #0b0f19; /* default dark bg for gradient */
         --card: rgba(255, 255, 255, 0.06);
         --card-border: rgba(255, 255, 255, 0.12);
@@ -84,6 +84,17 @@
             color-mix(in oklab, var(--bg), #000 5%),
             var(--bg)
           );
+        background-size: 400% 400%;
+        animation: orb-move 20s ease-in-out infinite alternate;
+      }
+
+      @keyframes orb-move {
+        0% {
+          background-position: 0% 0%;
+        }
+        100% {
+          background-position: 100% 100%;
+        }
       }
 
       .card {
@@ -118,6 +129,20 @@
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
+        background-size: 200% 200%;
+        animation: text-sheen 6s linear infinite;
+      }
+
+      @keyframes text-sheen {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
       }
     </style>
   </head>
@@ -139,7 +164,7 @@
             </h1>
             <p
               id="site-description"
-              class="mt-2 text-slate-600 dark:text-slate-300 max-w-2xl"
+              class="mt-2 text-slate-600 dark:text-slate-200 max-w-2xl"
             >
               A beautiful, adaptive launcher for my apps.
             </p>
@@ -161,10 +186,10 @@
               id="search"
               type="search"
               placeholder="Search tools…"
-              class="w-full sm:w-80 rounded-2xl bg-white/90 dark:bg-white/10 text-slate-800 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400 px-5 py-3 card ring-accent"
+              class="w-full sm:w-80 rounded-2xl bg-white/90 dark:bg-white/10 text-slate-800 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-300 px-5 py-3 card ring-accent"
             />
             <div
-              class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
+              class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-200"
             >
               ⌘K
             </div>
@@ -182,7 +207,7 @@
       ></section>
 
       <!-- Footer / Last updated -->
-      <footer class="mt-12 text-sm text-slate-500 dark:text-slate-400">
+      <footer class="mt-12 text-sm text-slate-500 dark:text-slate-300">
         <div id="last-updated"></div>
         <div class="mt-2">
           <a href="site.yaml" class="underline hover:no-underline"
@@ -277,7 +302,7 @@ links:
         row.innerHTML = "";
         if (tags.length === 0) return;
         const label = document.createElement("span");
-        label.className = "text-slate-600 dark:text-slate-300 mr-1 self-center";
+        label.className = "text-slate-600 dark:text-slate-200 mr-1 self-center";
         label.textContent = "Filter:";
         row.appendChild(label);
         tags.forEach((t) => row.appendChild(createTagPill(t, false)));
@@ -306,7 +331,7 @@ links:
         h3.textContent = link.title;
 
         const desc = document.createElement("p");
-        desc.className = "mt-1 text-sm text-slate-600 dark:text-slate-300";
+        desc.className = "mt-1 text-sm text-slate-600 dark:text-slate-200";
         desc.textContent = link.description || "";
 
         titleWrap.appendChild(h3);
@@ -320,14 +345,14 @@ links:
         (link.tags || []).forEach((tag) => {
           const chip = document.createElement("span");
           chip.className =
-            "rounded-full bg-white/60 dark:bg-white/10 text-slate-700 dark:text-slate-200 px-2 py-0.5 text-xs border border-slate-200/60 dark:border-white/10";
+            "rounded-full bg-white/60 dark:bg-white/10 text-slate-700 dark:text-white px-2 py-0.5 text-xs border border-slate-200/60 dark:border-white/10";
           chip.textContent = `#${tag}`;
           chips.appendChild(chip);
         });
 
         const arrow = document.createElement("div");
         arrow.className =
-          "mt-4 inline-flex items-center text-sm font-medium text-slate-800/80 dark:text-white/80";
+          "mt-4 inline-flex items-center text-sm font-medium text-slate-800/80 dark:text-slate-100";
         arrow.innerHTML = `
           <span class="grad-text">Open</span>
           <svg class="ml-2 h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
