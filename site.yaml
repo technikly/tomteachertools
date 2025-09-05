@@ -20,3 +20,8 @@ links:
     description: "Generate timetables the easy way."
     icon: "📅"
     tags: ["scheduling", "school"]
+  - title: "Calendar Table Tool"
+    url: "https://calendartable.netlify.app/"
+    description: "Turn ICS files into tables."
+    icon: "📆"
+    tags: ["calendar"]
